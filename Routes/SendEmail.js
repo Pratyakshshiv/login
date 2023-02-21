@@ -82,7 +82,7 @@ const sendEmail = async (name, email, token) => {
             secure: false, // true for 465, false for other ports
             auth: {
                 user: 'nodeotp@gmail.com', // generated ethereal user
-                pass: process.env.GPass, // generated ethereal password
+                pass: 'anupljlaklpmyoqe', // generated ethereal password
             },
         });
 
