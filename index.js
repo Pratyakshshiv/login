@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 mongoDB();
 app.use((req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "https://frontenddemo-or9u.vercel.app");
+    res.setHeader("Access-Control-Allow-Origin", "https://updated-userdata-frontend.vercel.app/verify/pratyakshshivhare@gmail.com");
     res.header(
         "Access-Control-Allow-Headers",
         "Origin,X-Requested-With,Content-Type,Accepet"
