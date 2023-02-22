@@ -77,6 +77,27 @@ router.post('/verifyUser/:email', async (req, res) => {
     }
 })
 
+router.post('/accverify/:email', async (req, res) => {
+    let email = req.params.email
+    try {
+        let userData = await User.findOneAndUpdate({ email: email }, {
+            token: "",
+            isVerified: true
+        });
+        // if (!userData) {
+        //     return res.status(400).json({ errors: "enter correct otp.." });
+        // }
+        if (req.body.token == userData.token) {
+            console.log("otp sahi hai")
+            return res.json({ success: true });
+        } else {
+            return res.status(400).json({ errors: "enter correct otp..", success: false })
+        }
+    } catch (error) {
+        res.status(409).json({ message: error.message })
+    }
+})
+
 router.post('/resetPass/:otp', async (req, res) => {
     let otp = req.params.otp
     const salt = await bcrypt.genSalt(10);
@@ -124,24 +145,29 @@ router.post(
 
         try {
             let userData = await User.findOne({ email });
+            if (!userData.isVerified) {
+                return res.status(200).json({ errors: "Verify user" });
+            }
             if (!userData) {
                 return res.status(400).json({ errors: "enter correct cred.." });
             }
-            const pwdCompare = await bcrypt.compare(
-                req.body.password,
-                userData.password
-            );
-            if (!pwdCompare) {
-                return res.status(400).json({ errors: "enter correct cred.." });
-            }
-            const data = {
-                user: {
-                    id: userData.id,
-                },
-            };
-            const authToken = jwt.sign(data, process.env.jwtSecret);
+            if (userData.isVerified) {
+                const pwdCompare = await bcrypt.compare(
+                    req.body.password,
+                    userData.password
+                );
+                if (!pwdCompare) {
+                    return res.status(400).json({ errors: "enter correct cred.." });
+                }
+                const data = {
+                    user: {
+                        id: userData.id,
+                    },
+                };
+                const authToken = jwt.sign(data, process.env.jwtSecret);
 
-            return res.json({ success: true, authToken: authToken });
+                return res.json({ success: true, authToken: authToken });
+            }
         } catch (error) {
             console.log(error);
             res.json({ success: false });
