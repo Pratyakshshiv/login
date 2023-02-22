@@ -20,6 +20,10 @@ const UserDataSchema = new Schema({
     token: {
         type: String,
         default: ''
+    },
+    isVerified: {
+        type: Boolean,
+        default: false
     }
 })
 
